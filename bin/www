@@ -7,12 +7,13 @@
 var app = require('../app');
 var debug = require('debug')('repository-management-backend:server');
 var http = require('http');
+const MongoClient = require('mongodb').MongoClient;
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '8080');
 app.set('port', port);
 
 /**
@@ -25,7 +26,28 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+// Connection URL
+const url = 'mongodb://localhost:27017';
+
+// Database Name
+const dbName = 'repository_management';
+const client = new MongoClient(url);
+// Use connect method to connect to the server
+client.connect(function(err) {
+  if (err) {
+    throw err;
+  }
+  console.log('Connected successfully to server');
+
+  const db = client.db(dbName);
+  
+  server.listen(app.get('port'));
+
+  global.db = db;
+
+  //client.close();
+});
+
 server.on('error', onError);
 server.on('listening', onListening);
 
