@@ -9,7 +9,8 @@ var authRouter = require('./routes/auth');
 
 const cors = require("cors"),
       config = require("./config");
-      auth = require('./src/auth');
+      auth = require('./src/auth'),
+      require('express-session');
 
 var app = express();
 

@@ -1,12 +1,14 @@
 const session = require("express-session");
 const redis = require("redis");
 const redisClient = redis.createClient({
-  host: 'localhost',
+  host: '127.0.0.1',
   port: 6379
 });
 let RedisStore = require("connect-redis")(session);
 const devCookieSettings = {
-  maxAge: (60 * 60000)
+  maxAge: (60 * 60000),
+  secure: false,
+  httpOnly: false,
 };
 const sessionOptions = {
   name: "Repository Management",
@@ -18,5 +20,9 @@ const sessionOptions = {
   store: new RedisStore({ client: redisClient }),
   resave: false
 };
+
+redisClient.on('connect', function (err) {
+  console.log('Connected to redis successfully');
+});
 
 module.exports = session(sessionOptions);
