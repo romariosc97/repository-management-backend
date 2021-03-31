@@ -6,6 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+var repositoryRouter = require('./routes/repository');
 
 const cors = require("cors"),
       config = require("./config");
@@ -17,7 +18,7 @@ var app = express();
 // view engine setup
 app.use(cors(config.corsOptions));
 app.use(auth.session);
-app.use('/api/*', auth.required);
+//app.use('/api/*', auth.required);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
@@ -29,6 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
+app.use('/', repositoryRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
