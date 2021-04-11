@@ -10,7 +10,7 @@ router.post('/login', async (req, res, next) => {
         options = {};
   const user = await userCollection.findOne(query, options);
   account = user;
-  if(Object.keys(account).length > 0){
+  if(/*Object.keys(account).length > 0*/account){
     req.session['user'] = {
       name: account.name,
       last_name: account.last_name,
@@ -27,9 +27,18 @@ router.get('/logout', function (req, res) {
   return res.status(200).json({success: true, data: []})
 });
 
-router.get('/session', function (req, res) {
+router.get('/session', async function (req, res) {
   if ('user' in req.session){
-      return res.status(200).json({success: true, data: req.session})
+    const userCollection = db.collection('users');
+    const query = { email: req.session.user.email },
+          options = {};
+    const user = await userCollection.findOne(query, options);
+    account = user;
+    if(account){
+      return res.status(200).json({success: true, data: account})
+    }else{
+      return res.status(200).json({success: false, data: []})
+    }
   }else{
       return res.status(200).json({success: false, data: []})
   }
